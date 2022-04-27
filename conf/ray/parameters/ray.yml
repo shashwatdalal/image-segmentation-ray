@@ -4,4 +4,4 @@ ray_init:
     conda: ray-image-segmentation # conda env
     working_dir: /Users/shashwat_dalal/Documents/image-segmentation-ray/ # run in context of this directory when running code remotely
     excludes:
-      - data
+      - data # do not copy data directory
