@@ -1,0 +1,9 @@
+ray_init:
+  address: ray://gpu.instance:10001
+  runtime_env:
+    conda: ray-image-segmentation
+    working_dir: /Users/shashwat_dalal/Documents/image-segmentation-ray/
+    excludes:
+      - data
+    env_vars:
+      data_path: /home/shash/image-segmentation-ray/data

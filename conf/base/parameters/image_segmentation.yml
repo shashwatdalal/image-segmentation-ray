@@ -1,0 +1,72 @@
+data_bowl.input_path: "${base_path|data}/data_bowl/train"
+
+data_bowl.data_split.train_ratio: 0.7
+data_bowl.data_split.val_ratio: 0.2
+data_bowl.data_split.split_col_name: split_col_name
+data_bowl.data_split.split_labels:
+  train: TRAIN
+  validation: VAL
+  test: TEST
+
+data_bowl.model:
+  object: monai.networks.nets.UNet
+  spatial_dims: 2
+  in_channels: 1
+  out_channels: 1
+  channels: [4, 8, 16]
+  strides: [2, 2]
+  num_res_units: 2
+
+data_bowl.loss:
+  object: torch.nn.BCEWithLogitsLoss
+
+data_bowl.learning_rate: 0.02
+
+
+data_bowl.train.transforms:
+  object: torchvision.transforms.Compose
+  transforms:
+    - object: torchvision.transforms.CenterCrop
+      size: 256
+
+data_bowl.train.target_transforms:
+  object: torchvision.transforms.Compose
+  transforms:
+    - object: torchvision.transforms.CenterCrop
+      size: 256
+
+data_bowl.train.data_loader_kwargs:
+  batch_size: 16
+  shuffle: True
+
+data_bowl.train.trainer_kwargs:
+  max_epochs: 10
+  fast_dev_run: False
+  logger:
+    object: pytorch_lightning.loggers.TensorBoardLogger
+    save_dir: logs/
+    name: image_segmentation
+
+data_bowl.inference.splits_to_predict:
+  - TEST
+
+data_bowl.inference.threshold: 0.7
+
+data_bowl.inference.output_layer_activ_function:
+  object: torch.sigmoid
+
+data_bowl.inference.use_gpu: False
+
+data_bowl.post_process_functions:
+  -
+    - object: skimage.morphology.remove_small_holes
+      instantiate: False
+    - area_threshold: 5
+  -
+    - object: skimage.morphology.remove_small_objects
+      instantiate: False
+    - min_size: 5
+
+data_bowl.evaluate.evaluation_metrics:
+  - object: src.image_segmentation_ray.src.image_segmentation.v1.core.evaluation.compute_iou
+  - object: src.image_segmentation_ray.src.image_segmentation.v1.core.evaluation.compute_dice_loss

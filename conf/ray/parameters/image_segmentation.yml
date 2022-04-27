@@ -1,0 +1,13 @@
+data_bowl.train.data_loader_kwargs:
+  batch_size: 256
+  shuffle: True
+
+data_bowl.train.trainer_kwargs:
+  max_epochs: 100
+  fast_dev_run: False
+  accelerator: gpu
+  devices: 4
+  logger:
+    object: pytorch_lightning.loggers.TensorBoardLogger
+    save_dir: logs/
+    name: image_segmentation

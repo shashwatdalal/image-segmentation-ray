@@ -1,0 +1,23 @@
+data_bowl.simplify_data_structure:
+  type: pickle.PickleDataSet
+  filepath: "${base_path|data}/data_bowl/simplify_data_structure_success"
+
+data_bowl.metadata:
+  type: pickle.PickleDataSet
+  filepath: "${base_path|data}/data_bowl/metadata"
+
+data_bowl.metadata_w_data_split:
+  type: pickle.PickleDataSet
+  filepath: "${base_path|data}/data_bowl/metadata_w_data_split"
+
+data_bowl.trained_model:
+  type: pickle.PickleDataSet
+  filepath: "${base_path|data}/data_bowl/trained_model"
+
+data_bowl.inference:
+  type: pickle.PickleDataSet
+  filepath: "${base_path|data}/data_bowl/inference"
+
+data_bowl.metadata_w_performance:
+  type: pickle.PickleDataSet
+  filepath: "${base_path|data}/data_bowl/metadata_w_performance"
