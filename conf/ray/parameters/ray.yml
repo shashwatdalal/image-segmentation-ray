@@ -1,9 +1,7 @@
 ray_init:
-  address: ray://gpu.instance:10001
+  address: ray://gpu.instance:10001 # server address
   runtime_env:
-    conda: ray-image-segmentation
-    working_dir: /Users/shashwat_dalal/Documents/image-segmentation-ray/
+    conda: ray-image-segmentation # conda env
+    working_dir: /Users/shashwat_dalal/Documents/image-segmentation-ray/ # run in context of this directory when running code remotely
     excludes:
       - data
-    env_vars:
-      data_path: /home/shash/image-segmentation-ray/data

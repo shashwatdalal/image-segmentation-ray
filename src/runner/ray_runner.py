@@ -46,15 +46,16 @@ class RayRunner(SequentialRunner):
                 decorated_node_funcs.append(ray.remote(num_gpus=4)(_f))
 
         for _df, _node in zip(decorated_node_funcs, nodes):
-            # run serially
+            # NOTE: there is no data-exchange across the network
             self._logger.info("Ray Executor reading %s input", _node.name)
+            # read inputs remotely
             input_pointers = [remote_load.remote(catalog, _input) for _input in _node.inputs]
             self._logger.info("Submitting node %s to Ray Executor", _node.name)
-            # assume only single output
-            result = _df.remote(*input_pointers)
+            # execute node remotely
+            result_pointer = _df.remote(*input_pointers)
             self._logger.info("Ray Executor writing %s output", _node.name)
-            # block
-            ray.get(remote_save.remote(catalog, _node.outputs[0], result))
+            # block and save node output remotely
+            ray.get(remote_save.remote(catalog, _node.outputs[0], result_pointer))
 
 @ray.remote
 def remote_load(catalog, input):
