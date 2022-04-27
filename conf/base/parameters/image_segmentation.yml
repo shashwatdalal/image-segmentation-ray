@@ -1,5 +1,7 @@
 data_bowl.input_path: "${base_path|data}/data_bowl/train"
 
+data_bowl.pool_size: 4
+
 data_bowl.data_split.train_ratio: 0.7
 data_bowl.data_split.val_ratio: 0.2
 data_bowl.data_split.split_col_name: split_col_name

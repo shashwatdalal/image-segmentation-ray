@@ -11,3 +11,5 @@ data_bowl.train.trainer_kwargs:
     object: pytorch_lightning.loggers.TensorBoardLogger
     save_dir: logs/
     name: image_segmentation
+
+data_bowl.pool_size: 32

@@ -13,17 +13,21 @@
 """Data Science BOWL connector."""
 
 import os
+from multiprocessing import Pool
 
 import numpy as np
 from skimage import io
-from tqdm import tqdm
+from tqdm.contrib.concurrent import process_map
+from functools import partial
+import warnings
+
 
 from src.image_segmentation_ray.src.image_segmentation.v1.core.preprocessing.formatting import (
     combine_masks_into_single_mask,
 )
 
 
-def simplify_data_structure(input_path: str) -> bool:
+def simplify_data_structure(input_path: str, pool_size=2) -> bool:
     """The Data Science Bowl dataset comprises many folders with different ID's.
 
     In all these folders, the structure is the same :
@@ -60,7 +64,13 @@ def simplify_data_structure(input_path: str) -> bool:
         sub_folder for sub_folder in os.listdir(input_path) if sub_folder != ".DS_Store"
     ]
 
-    for id in tqdm(sub_folders_list):
+    process_map(partial(simplify_image, input_path), sub_folders_list, max_workers=pool_size)
+    return True
+
+
+def simplify_image(input_path, id):
+    with warnings.catch_warnings():
+        warnings.simplefilter('ignore')
         masks_list = []
 
         # For each sub-folder "id", get the list of masks inside "masks" folder
@@ -78,15 +88,12 @@ def simplify_data_structure(input_path: str) -> bool:
         output_mask = combine_masks_into_single_mask(masks_list)
 
         # Write output mask
-        io.imsave(output_mask_path, output_mask)
+        io.imsave(output_mask_path, output_mask.astype(np.uint8))
 
         # All channels in the image are carrying same information
         image = io.imread(os.path.join(sub_folder_path, "images", id + ".png"))
-        import sys
-        print(sub_folder_path, file=sys.stderr)
         first_channel = image[:, :, 0]
         image = np.reshape(
             first_channel, newshape=(first_channel.shape[0], first_channel.shape[1], 1)
         )
-        io.imsave(os.path.join(sub_folder_path, "image.png"), image)
-    return True
+        io.imsave(os.path.join(sub_folder_path, "image.png"), image.astype(np.uint8))

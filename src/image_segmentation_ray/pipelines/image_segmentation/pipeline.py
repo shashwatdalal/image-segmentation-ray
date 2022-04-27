@@ -24,7 +24,7 @@ def create_pipeline(**kwargs) -> Pipeline:
         [
             node(
                 func=simplify_data_structure.simplify_data_structure,
-                inputs={"input_path": "params:data_bowl.input_path"},
+                inputs={"input_path": "params:data_bowl.input_path","pool_size": "params:data_bowl.pool_size"},
                 outputs="data_bowl.simplify_data_structure",
                 name="data_bowl.simplify_data_structure",
             ),
